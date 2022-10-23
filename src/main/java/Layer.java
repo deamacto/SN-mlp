@@ -1,5 +1,6 @@
 import org.ejml.simple.SimpleMatrix;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Layer {
@@ -34,6 +35,25 @@ public class Layer {
             }
         }
         return activations;
+    }
+
+    public SimpleMatrix softmax(SimpleMatrix input) {
+        SimpleMatrix sums = (weights.mult(input)).plus(biases);
+        ArrayList<Double> es = new ArrayList<>();
+
+        for(int i = 0; i < sums.numRows(); i++) {
+            es.add(Math.exp(sums.get(i, 0)));
+        }
+
+        double eSum = es.stream().mapToDouble(Double::doubleValue).sum();
+
+        SimpleMatrix softmax = new SimpleMatrix(sums.numRows(), 1);
+
+        for(int i = 0; i < sums.numRows(); i++) {
+            softmax.set(i, 0, es.get(i)/eSum);
+        }
+
+        return softmax;
     }
 
     public double activate(double value, ActivationFunction activationFunction) {
