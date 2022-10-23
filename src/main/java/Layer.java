@@ -23,4 +23,20 @@ public class Layer {
 
         return weights;
     }
+
+    public static double sigmoid(double x) {
+        return 1 / (1 + Math.exp(-x));
+    }
+
+    public static double tanh(double x) {
+        return (2 / (1 + Math.exp(-2 * x))) - 1;
+    }
+
+    public static double relu(double x) {
+        if(x < 0) {
+            return 0;
+        } else {
+            return x;
+        }
+    }
 }
