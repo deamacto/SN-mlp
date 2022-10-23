@@ -24,6 +24,30 @@ public class Layer {
         return weights;
     }
 
+    public SimpleMatrix calculate(SimpleMatrix input, ActivationFunction activationFunction) {
+        SimpleMatrix sums = (weights.mult(input)).plus(biases);
+        SimpleMatrix activations = new SimpleMatrix(sums.numRows(), 1);
+
+        for(int i = 0; i < sums.numRows(); i++) {
+            for(int j = 0; j < sums.numCols(); j++) {
+                activations.set(i, j, activate(sums.get(i, j), activationFunction));
+            }
+        }
+        return activations;
+    }
+
+    public double activate(double value, ActivationFunction activationFunction) {
+        if(activationFunction == ActivationFunction.SIGMOID) {
+            return sigmoid(value);
+        } else if(activationFunction == ActivationFunction.TANH) {
+            return tanh(value);
+        } else if(activationFunction == ActivationFunction.RELU) {
+            return relu(value);
+        } else {
+            return Double.MIN_VALUE;
+        }
+    }
+
     public static double sigmoid(double x) {
         return 1 / (1 + Math.exp(-x));
     }
