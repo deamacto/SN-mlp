@@ -18,7 +18,7 @@ public class Layer {
 
         for(int i = 0; i < weights.length; i++) {
             for(int j = 0; j < weights[0].length; j++) {
-                weights[i][j] = random.nextGaussian();
+                weights[i][j] = random.nextGaussian() * Consts.DESIRED_STANDARD_DEVIATION + Consts.DESIRED_MEAN;
             }
         }
 
