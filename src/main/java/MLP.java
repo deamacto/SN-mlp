@@ -5,14 +5,14 @@ import java.util.ArrayList;
 public class MLP {
     ArrayList<Layer> layers = new ArrayList<>();
 
-    public MLP(int hiddenLayers, int neuronCount) {
-        layers.add(new Layer(neuronCount, 1));
+    public MLP(ArrayList<Integer> neuronCount) {
+        layers.add(new Layer(Consts.NEURONS_INPUT, 1));
 
-        for(int i = 0; i < hiddenLayers; i++) {
-            layers.add(new Layer(neuronCount, neuronCount));
+        for(int i = 0; i < neuronCount.size(); i++) {
+            layers.add(new Layer(neuronCount.get(i), layers.get(i).biases.numRows()));
         }
 
-        layers.add(new Layer(10, neuronCount));
+        layers.add(new Layer(Consts.NEURONS_OUTPUT, layers.get(layers.size() - 2).biases.numRows()));
     }
 
     public SimpleMatrix calculate(Input input, ActivationFunction activationFunction, boolean isSoftmax) {
