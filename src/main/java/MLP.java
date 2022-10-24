@@ -15,7 +15,7 @@ public class MLP {
         layers.add(new Layer(Consts.NEURONS_OUTPUT, layers.get(layers.size() - 2).biases.numRows()));
     }
 
-    public SimpleMatrix calculate(Input input, ActivationFunction activationFunction, boolean isSoftmax) {
+    public boolean calculate(Input input, ActivationFunction activationFunction, boolean isSoftmax) {
         SimpleMatrix result = layers.get(0).calculate(input.toSimpleMatrix(), activationFunction);
         for(int i = 1; i < layers.size() - 2; i++) {
             result = layers.get(i).calculate(result, activationFunction);
@@ -27,6 +27,16 @@ public class MLP {
             result = layers.get(layers.size() - 1).calculate(result, activationFunction);
         }
 
-        return result;
+        int maxIndex = -1;
+        double maxValue = -1;
+        for(int i = 1; i < result.numRows() - 1; i++) {
+            if(result.get(i, 0) > maxValue) {
+                maxValue = result.get(i, 0);
+                maxIndex = i;
+            }
+        }
+
+        System.out.println(result);
+        return maxIndex == input.d;
     }
 }
