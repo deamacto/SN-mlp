@@ -9,12 +9,17 @@ public class Layer {
 
     public Layer(int neuronCount, int previousNeuronsCount) {
         this.weights = new SimpleMatrix(generateWeights(neuronCount, previousNeuronsCount));
+        System.out.println("Weights");
         this.biases = new SimpleMatrix(generateWeights(neuronCount, 1));
+        System.out.println("Biases");
     }
 
     private static double[][] generateWeights(int neuronCount, int previousNeuronsCount) {
         double[][] weights = new double[neuronCount][previousNeuronsCount];
         Random random = new Random();
+
+        System.out.print(weights.length + " ");
+        System.out.print(weights[0].length + " ");
 
         for(int i = 0; i < weights.length; i++) {
             for(int j = 0; j < weights[0].length; j++) {
@@ -82,5 +87,9 @@ public class Layer {
         } else {
             return x;
         }
+    }
+
+    public String dimensions() {
+        return "Wymiary wag: " + "rzędy " + weights.numRows() + " kolumny " + weights.numCols();
     }
 }

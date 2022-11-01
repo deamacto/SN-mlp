@@ -12,7 +12,7 @@ public class MLP {
             layers.add(new Layer(neuronCount.get(i), layers.get(i).biases.numRows()));
         }
 
-        layers.add(new Layer(Consts.NEURONS_OUTPUT, layers.get(layers.size() - 2).biases.numRows()));
+        layers.add(new Layer(Consts.NEURONS_OUTPUT, layers.get(layers.size() - 1).biases.numRows()));
     }
 
     public boolean calculate(Input input, ActivationFunction activationFunction, boolean isSoftmax) {
