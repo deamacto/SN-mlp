@@ -6,7 +6,7 @@ public class MLP {
     ArrayList<Layer> layers = new ArrayList<>();
 
     public MLP(ArrayList<Integer> neuronCount) {
-        layers.add(new Layer(Consts.NEURONS_INPUT, 1));
+        layers.add(new Layer(10, Consts.NEURONS_INPUT));
 
         for(int i = 0; i < neuronCount.size(); i++) {
             layers.add(new Layer(neuronCount.get(i), layers.get(i).biases.numRows()));
@@ -15,9 +15,9 @@ public class MLP {
         layers.add(new Layer(Consts.NEURONS_OUTPUT, layers.get(layers.size() - 1).biases.numRows()));
     }
 
-    public boolean calculate(Input input, ActivationFunction activationFunction, boolean isSoftmax) {
-        SimpleMatrix result = layers.get(0).calculate(input.toSimpleMatrix(), activationFunction);
-        for(int i = 1; i < layers.size() - 2; i++) {
+    public boolean calculate(Digit input, ActivationFunction activationFunction, boolean isSoftmax) {
+        SimpleMatrix result = layers.get(0).calculate(new SimpleMatrix(Consts.NEURONS_INPUT, 1, true, input.getDigit()), activationFunction);
+        for(int i = 1; i < layers.size() - 1; i++) {
             result = layers.get(i).calculate(result, activationFunction);
         }
 
@@ -37,6 +37,6 @@ public class MLP {
         }
 
         System.out.println(result);
-        return maxIndex == input.d;
+        return maxIndex == input.getLabel();
     }
 }
