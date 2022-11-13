@@ -115,6 +115,12 @@ public class Layer {
             return tanh(value);
         } else if(activationFunction == ActivationFunction.RELU) {
             return relu(value);
+        } else if(activationFunction == ActivationFunction.SIGMOIDD) {
+            return sigmoidD(value);
+        } else if(activationFunction == ActivationFunction.TANHD) {
+            return tanhD(value);
+        } else if(activationFunction == ActivationFunction.SOFTPLUSD) {
+            return sigmoid(value);
         } else {
             return Double.MIN_VALUE;
         }
@@ -134,6 +140,14 @@ public class Layer {
         } else {
             return x;
         }
+    }
+
+    public static double sigmoidD(double x) {
+        return sigmoid(x) * (1 - sigmoid(x));
+    }
+
+    public static double tanhD(double x) {
+        return 1 - (tanh(x) * tanh(x));
     }
 
     public String dimensions() {

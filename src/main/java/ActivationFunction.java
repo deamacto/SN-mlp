@@ -1,5 +1,8 @@
 public enum ActivationFunction {
     SIGMOID,
     TANH,
-    RELU
+    RELU,
+    SIGMOIDD,
+    TANHD,
+    SOFTPLUSD
 }
