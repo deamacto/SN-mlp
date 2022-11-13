@@ -42,6 +42,22 @@ public class Layer {
         return activations;
     }
 
+    // Macierz inputow jest teraz 2d
+    public SimpleMatrix calculateBatch(SimpleMatrix input, ActivationFunction activationFunction) {
+        SimpleMatrix sums = new SimpleMatrix(weights.numRows(), input.numCols());
+
+        for(int i = 0; i < input.numCols(); i++) {
+            sums.setColumn(i, 0, Util.toArray((weights.mult(input.cols(i, i)).plus(biases))));
+        }
+
+        for(int i = 0; i < sums.numRows(); i++) {
+            for(int j = 0; j < sums.numCols(); j++) {
+                sums.set(i, j, activate(sums.get(i, j), activationFunction));
+            }
+        }
+        return sums;
+    }
+
     public SimpleMatrix softmax(SimpleMatrix input) {
         SimpleMatrix sums = (weights.mult(input)).plus(biases);
         ArrayList<Double> es = new ArrayList<>();
