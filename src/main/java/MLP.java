@@ -3,28 +3,28 @@ import org.ejml.simple.SimpleMatrix;
 import java.util.ArrayList;
 
 public class MLP {
-    ArrayList<Layer> layers = new ArrayList<>();
+    ArrayList<LayerWrapper> layers = new ArrayList<>();
 
     public MLP(ArrayList<Integer> neuronCount) {
-        layers.add(new Layer(10, Consts.NEURONS_INPUT));
+        layers.add(new LayerWrapper(new Layer(10, Consts.NEURONS_INPUT)));
 
         for(int i = 0; i < neuronCount.size(); i++) {
-            layers.add(new Layer(neuronCount.get(i), layers.get(i).biases.numRows()));
+            layers.add(new LayerWrapper(new Layer(neuronCount.get(i), layers.get(i).layer.biases.numRows())));
         }
 
-        layers.add(new Layer(Consts.NEURONS_OUTPUT, layers.get(layers.size() - 1).biases.numRows()));
+        layers.add(new LayerWrapper(new Layer(Consts.NEURONS_OUTPUT, layers.get(layers.size() - 1).layer.biases.numRows())));
     }
 
     public boolean calculate(Digit input, ActivationFunction activationFunction, boolean isSoftmax) {
-        SimpleMatrix result = layers.get(0).calculate(new SimpleMatrix(Consts.NEURONS_INPUT, 1, true, input.getDigit()), activationFunction);
+        SimpleMatrix result = layers.get(0).layer.calculate(new SimpleMatrix(Consts.NEURONS_INPUT, 1, true, input.getDigit()), activationFunction);
         for(int i = 1; i < layers.size() - 1; i++) {
-            result = layers.get(i).calculate(result, activationFunction);
+            result = layers.get(i).layer.calculate(result, activationFunction);
         }
 
         if(isSoftmax) {
-            result = layers.get(layers.size() - 1).softmax(result);
+            result = layers.get(layers.size() - 1).layer.softmax(result);
         } else {
-            result = layers.get(layers.size() - 1).calculate(result, activationFunction);
+            result = layers.get(layers.size() - 1).layer.calculate(result, activationFunction);
         }
 
         int maxIndex = -1;

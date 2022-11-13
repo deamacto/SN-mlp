@@ -42,14 +42,37 @@ public class Layer {
         return activations;
     }
 
+    public SimpleMatrix softmax(SimpleMatrix input) {
+        SimpleMatrix sums = (weights.mult(input)).plus(biases);
+        ArrayList<Double> es = new ArrayList<>();
+
+        for(int i = 0; i < sums.numRows(); i++) {
+            es.add(Math.exp(sums.get(i, 0)));
+        }
+
+        double eSum = es.stream().mapToDouble(Double::doubleValue).sum();
+
+        SimpleMatrix softmax = new SimpleMatrix(sums.numRows(), 1);
+
+        for(int i = 0; i < sums.numRows(); i++) {
+            softmax.set(i, 0, es.get(i)/eSum);
+        }
+
+        return softmax;
+    }
+
     // Macierz inputow jest teraz 2d
-    public SimpleMatrix calculateBatch(SimpleMatrix input, ActivationFunction activationFunction) {
+    public SimpleMatrix stimulateBatch(SimpleMatrix input) {
         SimpleMatrix sums = new SimpleMatrix(weights.numRows(), input.numCols());
 
         for(int i = 0; i < input.numCols(); i++) {
             sums.setColumn(i, 0, Util.toArray((weights.mult(input.cols(i, i+1)).plus(biases))));
         }
 
+        return sums;
+    }
+
+    public SimpleMatrix calculateBatch(SimpleMatrix input, ActivationFunction activationFunction, SimpleMatrix sums) {
         for(int i = 0; i < sums.numRows(); i++) {
             for(int j = 0; j < sums.numCols(); j++) {
                 sums.set(i, j, activate(sums.get(i, j), activationFunction));
@@ -58,13 +81,7 @@ public class Layer {
         return sums;
     }
 
-    public SimpleMatrix softmaxBatch(SimpleMatrix input) {
-        SimpleMatrix sums = new SimpleMatrix(weights.numRows(), input.numCols());
-
-        for(int i = 0; i < input.numCols(); i++) {
-            sums.setColumn(i, 0, Util.toArray((weights.mult(input.cols(i, i+1)).plus(biases))));
-        }
-
+    public SimpleMatrix softmaxBatch(SimpleMatrix input, SimpleMatrix sums) {
         SimpleMatrix es = new SimpleMatrix(weights.numRows(), input.numCols());
 
         for(int i = 0; i < sums.numRows(); i++) {
@@ -86,25 +103,6 @@ public class Layer {
                 softmax.set(i, j, es.get(i,j)/eSums.get(j));
             }
         }
-        return softmax;
-    }
-
-    public SimpleMatrix softmax(SimpleMatrix input) {
-        SimpleMatrix sums = (weights.mult(input)).plus(biases);
-        ArrayList<Double> es = new ArrayList<>();
-
-        for(int i = 0; i < sums.numRows(); i++) {
-            es.add(Math.exp(sums.get(i, 0)));
-        }
-
-        double eSum = es.stream().mapToDouble(Double::doubleValue).sum();
-
-        SimpleMatrix softmax = new SimpleMatrix(sums.numRows(), 1);
-
-        for(int i = 0; i < sums.numRows(); i++) {
-            softmax.set(i, 0, es.get(i)/eSum);
-        }
-
         return softmax;
     }
 
