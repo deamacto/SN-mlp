@@ -23,6 +23,19 @@ public class Digit {
         return label;
     }
 
+    public double[] getLabelArray() {
+        double[] label = new double[10];
+        for(int i = 0; i < label.length; i++) {
+            if(i == this.label) {
+                label[i] = 1;
+            } else {
+                label[i] = 0;
+            }
+        }
+
+        return label;
+    }
+
     @Override
     public String toString() {
         StringBuilder digitString =new StringBuilder().append("Label: " + label + "\n");

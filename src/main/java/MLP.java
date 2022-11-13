@@ -40,7 +40,7 @@ public class MLP {
         return maxIndex == input.getLabel();
     }
 
-    public void learn(SimpleMatrix input, ActivationFunction activationFunction, boolean isSoftmax) {
+    public void learn(SimpleMatrix input, SimpleMatrix labels, ActivationFunction activationFunction, boolean isSoftmax) {
         SimpleMatrix result = layers.get(0).calculateBatch(input, activationFunction);
         for(int i = 1; i < layers.size() - 1; i++) {
             result = layers.get(i).calculateBatch(result, activationFunction);
@@ -52,15 +52,8 @@ public class MLP {
             result = layers.get(layers.size() - 1).calculateBatch(result, activationFunction);
         }
 
-//        int maxIndex = -1;
-//        double maxValue = -1;
-//        for(int i = 1; i < result.numRows() - 1; i++) {
-//            if(result.get(i, 0) > maxValue) {
-//                maxValue = result.get(i, 0);
-//                maxIndex = i;
-//            }
-//        }
+        SimpleMatrix errors = result.minus(labels);
 
-        System.out.println(result);
+        System.out.println(errors);
     }
 }

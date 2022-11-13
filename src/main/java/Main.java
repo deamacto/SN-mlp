@@ -19,7 +19,8 @@ public class Main {
 
 
             ArrayList<SimpleMatrix> batches = createMnistMatrix(digits);
-            mpl.learn(batches.get(0), ActivationFunction.TANH, true);
+            ArrayList<SimpleMatrix> labels = createLabelMatrix(digits);
+            mpl.learn(batches.get(0), labels.get(0), ActivationFunction.TANH, true);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,7 +40,26 @@ public class Main {
             }
             batch.setColumn(i % 60,0, digits[i].getDigit());
         }
+        batches.add(batch.copy());
 
         return batches;
+    }
+
+    public static ArrayList<SimpleMatrix> createLabelMatrix(Digit[] digits) {
+        ArrayList<SimpleMatrix> labels = new ArrayList<>();
+
+        SimpleMatrix batch = new SimpleMatrix(Consts.NEURONS_OUTPUT, Consts.BATCH_SIZE);
+        for(int i = 0; i < digits.length; i++) {
+
+            if(i % Consts.BATCH_SIZE == 0 && i != 0) {
+                labels.add(batch.copy());
+                batch.zero();
+            }
+            batch.setColumn(i % 60,0, digits[i].getLabelArray());
+        }
+
+        labels.add(batch.copy());
+
+        return labels;
     }
 }
