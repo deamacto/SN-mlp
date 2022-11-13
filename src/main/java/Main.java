@@ -13,8 +13,8 @@ public class Main {
             neuronCount.add(200);
             MLP mpl = new MLP(neuronCount);
 
-            for(Layer layer : mpl.layers) {
-                System.out.println(layer.dimensions());
+            for(LayerWrapper layer : mpl.layers) {
+                System.out.println(layer.layer.dimensions());
             }
 
 

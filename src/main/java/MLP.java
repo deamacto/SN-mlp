@@ -41,19 +41,39 @@ public class MLP {
     }
 
     public void learn(SimpleMatrix input, SimpleMatrix labels, ActivationFunction activationFunction, boolean isSoftmax) {
-        SimpleMatrix result = layers.get(0).calculateBatch(input, activationFunction);
+        layers.get(0).setStimuli(input);
+        SimpleMatrix result = layers.get(0).calculateBatch(activationFunction);
         for(int i = 1; i < layers.size() - 1; i++) {
-            result = layers.get(i).calculateBatch(result, activationFunction);
+            layers.get(i).setStimuli(result);
+            result = layers.get(i).calculateBatch(activationFunction);
         }
 
+        layers.get((layers.size() - 1)).setStimuli(result);
         if(isSoftmax) {
-            result = layers.get(layers.size() - 1).softmaxBatch(result);
+            result = layers.get(layers.size() - 1).softmaxBatch();
         } else {
-            result = layers.get(layers.size() - 1).calculateBatch(result, activationFunction);
+            result = layers.get(layers.size() - 1).calculateBatch(activationFunction);
         }
 
         SimpleMatrix errors = result.minus(labels);
+        SimpleMatrix derivatives = layers.get(layers.size() - 1).calculateBatch(getDerivative(activationFunction, isSoftmax));
 
         System.out.println(errors);
+    }
+
+    public ActivationFunction getDerivative(ActivationFunction activationFunction, boolean isSoftmax) {
+        if(isSoftmax) {
+            return ActivationFunction.SIGMOID;
+        } else {
+            if(activationFunction == ActivationFunction.SIGMOID) {
+                return ActivationFunction.SIGMOIDD;
+            } else if(activationFunction == ActivationFunction.TANH) {
+                return ActivationFunction.TANHD;
+            } else if(activationFunction == ActivationFunction.RELU) {
+                return ActivationFunction.SOFTPLUSD;
+            }
+        }
+
+        return null;
     }
 }

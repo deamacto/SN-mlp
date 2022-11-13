@@ -12,13 +12,11 @@ public class LayerWrapper {
         this.stimuli = layer.stimulateBatch(input);
     }
 
-    public SimpleMatrix calculateBatch(SimpleMatrix input, ActivationFunction activationFunction) {
-        setStimuli(input);
-        return layer.calculateBatch(input, activationFunction, this.stimuli);
+    public SimpleMatrix calculateBatch(ActivationFunction activationFunction) {
+        return layer.calculateBatch(activationFunction, this.stimuli);
     }
 
-    public SimpleMatrix softmaxBatch(SimpleMatrix input) {
-        setStimuli(input);
-        return layer.softmaxBatch(input, this.stimuli);
+    public SimpleMatrix softmaxBatch() {
+        return layer.softmaxBatch(this.stimuli);
     }
 }

@@ -72,7 +72,7 @@ public class Layer {
         return sums;
     }
 
-    public SimpleMatrix calculateBatch(SimpleMatrix input, ActivationFunction activationFunction, SimpleMatrix sums) {
+    public SimpleMatrix calculateBatch(ActivationFunction activationFunction, SimpleMatrix sums) {
         for(int i = 0; i < sums.numRows(); i++) {
             for(int j = 0; j < sums.numCols(); j++) {
                 sums.set(i, j, activate(sums.get(i, j), activationFunction));
@@ -81,8 +81,8 @@ public class Layer {
         return sums;
     }
 
-    public SimpleMatrix softmaxBatch(SimpleMatrix input, SimpleMatrix sums) {
-        SimpleMatrix es = new SimpleMatrix(weights.numRows(), input.numCols());
+    public SimpleMatrix softmaxBatch(SimpleMatrix sums) {
+        SimpleMatrix es = new SimpleMatrix(weights.numRows(), Consts.BATCH_SIZE);
 
         for(int i = 0; i < sums.numRows(); i++) {
             for(int j = 0; j < sums.numCols(); j++) {
