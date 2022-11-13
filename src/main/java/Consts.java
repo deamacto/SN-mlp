@@ -4,4 +4,6 @@ public class Consts {
 
     public static final int NEURONS_INPUT = 784;
     public static final int NEURONS_OUTPUT = 10;
+
+    public static final int BATCH_SIZE = 60;
 }

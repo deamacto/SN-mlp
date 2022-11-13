@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class Digit {
     private double[] digit;
     private int label;

@@ -47,7 +47,7 @@ public class Layer {
         SimpleMatrix sums = new SimpleMatrix(weights.numRows(), input.numCols());
 
         for(int i = 0; i < input.numCols(); i++) {
-            sums.setColumn(i, 0, Util.toArray((weights.mult(input.cols(i, i)).plus(biases))));
+            sums.setColumn(i, 0, Util.toArray((weights.mult(input.cols(i, i+1)).plus(biases))));
         }
 
         for(int i = 0; i < sums.numRows(); i++) {
@@ -56,6 +56,37 @@ public class Layer {
             }
         }
         return sums;
+    }
+
+    public SimpleMatrix softmaxBatch(SimpleMatrix input) {
+        SimpleMatrix sums = new SimpleMatrix(weights.numRows(), input.numCols());
+
+        for(int i = 0; i < input.numCols(); i++) {
+            sums.setColumn(i, 0, Util.toArray((weights.mult(input.cols(i, i+1)).plus(biases))));
+        }
+
+        SimpleMatrix es = new SimpleMatrix(weights.numRows(), input.numCols());
+
+        for(int i = 0; i < sums.numRows(); i++) {
+            for(int j = 0; j < sums.numCols(); j++) {
+                es.set(i, j, Math.exp(sums.get(i, j)));
+            }
+        }
+
+        ArrayList<Double> eSums = new ArrayList<>();
+
+        for(int i = 0; i < es.numCols(); i++) {
+            eSums.add(es.cols(i, i+1).elementSum());
+        }
+
+        SimpleMatrix softmax = new SimpleMatrix(sums.numRows(), sums.numCols());
+
+        for(int i = 0; i < sums.numRows(); i++) {
+            for(int j = 0; j < sums.numCols(); j++) {
+                softmax.set(i, j, es.get(i,j)/eSums.get(j));
+            }
+        }
+        return softmax;
     }
 
     public SimpleMatrix softmax(SimpleMatrix input) {
