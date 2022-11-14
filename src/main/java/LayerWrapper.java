@@ -3,6 +3,7 @@ import org.ejml.simple.SimpleMatrix;
 public class LayerWrapper {
     Layer layer;
     SimpleMatrix stimuli;
+    SimpleMatrix errors;
 
     public LayerWrapper(Layer layer) {
         this.layer = layer;
@@ -18,5 +19,9 @@ public class LayerWrapper {
 
     public SimpleMatrix softmaxBatch() {
         return layer.softmaxBatch(this.stimuli);
+    }
+
+    public SimpleMatrix calculateError(SimpleMatrix nextErrors, SimpleMatrix nextWeights,ActivationFunction activationFunction) {
+        return layer.calculateError(nextErrors, nextWeights, activationFunction, stimuli.copy());
     }
 }

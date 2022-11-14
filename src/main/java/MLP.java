@@ -58,7 +58,29 @@ public class MLP {
         SimpleMatrix errors = result.minus(labels);
         SimpleMatrix derivatives = layers.get(layers.size() - 1).calculateBatch(getDerivative(activationFunction, isSoftmax));
 
-        System.out.println(errors);
+        SimpleMatrix propagationError = errors.elementMult(derivatives);
+        layers.get(layers.size() - 1).errors = propagationError.copy();
+        SimpleMatrix propagationWeights = layers.get(layers.size() - 1).layer.weights;
+
+        for(int i = layers.size() - 2; i >= 0; i--) {
+            layers.get(i).errors = layers.get(i).calculateError(propagationError, propagationWeights, getDerivative(activationFunction, false));
+            propagationError = layers.get(i).errors;
+            propagationWeights = layers.get(i).layer.weights;
+        }
+
+        SimpleMatrix previousActivation = input;
+
+        for(int i = 0; i < layers.size(); i++) {
+            layers.get(i).layer.weights = layers.get(i).layer.weights.minus(layers.get(i).errors.mult(previousActivation.transpose()).scale(Consts.ALPHA_BY_BATCH));
+            previousActivation = layers.get(i).stimuli;
+
+            SimpleMatrix errorSums = new SimpleMatrix(layers.get(i).layer.biases.numRows(), 1);
+            for(int j = 0; j < layers.get(i).errors.numRows(); j++) {
+                errorSums.set(j, 0, layers.get(i).errors.rows(j, j+1).elementSum());
+            }
+
+            layers.get(i).layer.biases = layers.get(i).layer.biases.minus(errorSums.scale(Consts.ALPHA_BY_BATCH));
+        }
     }
 
     public ActivationFunction getDerivative(ActivationFunction activationFunction, boolean isSoftmax) {

@@ -106,6 +106,22 @@ public class Layer {
         return softmax;
     }
 
+    public SimpleMatrix calculateError(SimpleMatrix nextErrors, SimpleMatrix nextWeights,ActivationFunction activationFunction, SimpleMatrix stimuli) {
+        SimpleMatrix layerError = new SimpleMatrix(weights.numRows(), Consts.BATCH_SIZE);
+
+        for(int i = 0; i < nextErrors.numCols(); i++){
+            layerError.setColumn(i, 0, Util.toArray(nextWeights.transpose().mult(nextErrors.cols(i, i+1))));
+        }
+
+        for(int i = 0; i < stimuli.numRows(); i++) {
+            for(int j = 0; j < stimuli.numCols(); j++) {
+                stimuli.set(i, j, activate(stimuli.get(i, j), activationFunction));
+            }
+        }
+
+        return layerError.elementMult(stimuli);
+    }
+
     public double activate(double value, ActivationFunction activationFunction) {
         if(activationFunction == ActivationFunction.SIGMOID) {
             return sigmoid(value);
