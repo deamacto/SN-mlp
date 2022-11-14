@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class MLP {
     ArrayList<LayerWrapper> layers = new ArrayList<>();
+    double likelyhood = 0.0;
 
     public MLP(ArrayList<Integer> neuronCount) {
         layers.add(new LayerWrapper(new Layer(20, Consts.NEURONS_INPUT)));
@@ -36,6 +37,7 @@ public class MLP {
             }
         }
 
+        likelyhood += result.elementLog().elementMult(new SimpleMatrix(Consts.NEURONS_OUTPUT, 1, true, input.getLabelArray())).scale(-1.0).elementSum();
         return maxIndex == input.getLabel();
     }
 

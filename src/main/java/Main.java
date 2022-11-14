@@ -41,7 +41,8 @@ public class Main {
                 }
             }
 
-            System.out.println(correct/testDigits.length);
+            System.out.println(correct/testDigits.length + "\t" + mlp.likelyhood);
+            mlp.likelyhood = 0;
         }
 
 
