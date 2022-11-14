@@ -5,7 +5,7 @@ public class Consts {
     public static final int NEURONS_INPUT = 784;
     public static final int NEURONS_OUTPUT = 10;
 
-    public static final int BATCH_SIZE = 600;
-    public static final double ALPHA = 0.06;
+    public static final int BATCH_SIZE = 60;
+    public static final double ALPHA = 0.6;
     public static final double ALPHA_BY_BATCH = ALPHA/BATCH_SIZE;
 }

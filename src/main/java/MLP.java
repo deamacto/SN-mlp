@@ -6,7 +6,7 @@ public class MLP {
     ArrayList<LayerWrapper> layers = new ArrayList<>();
 
     public MLP(ArrayList<Integer> neuronCount) {
-        layers.add(new LayerWrapper(new Layer(30, Consts.NEURONS_INPUT)));
+        layers.add(new LayerWrapper(new Layer(20, Consts.NEURONS_INPUT)));
 
         for(int i = 0; i < neuronCount.size(); i++) {
             layers.add(new LayerWrapper(new Layer(neuronCount.get(i), layers.get(i).layer.biases.numRows())));
@@ -29,7 +29,7 @@ public class MLP {
 
         int maxIndex = -1;
         double maxValue = -1;
-        for(int i = 1; i < result.numRows() - 1; i++) {
+        for(int i = 0; i < result.numRows() - 1; i++) {
             if(result.get(i, 0) > maxValue) {
                 maxValue = result.get(i, 0);
                 maxIndex = i;
@@ -59,19 +59,19 @@ public class MLP {
 
         SimpleMatrix propagationError = errors.elementMult(derivatives);
         layers.get(layers.size() - 1).errors = propagationError.copy();
-        SimpleMatrix propagationWeights = layers.get(layers.size() - 1).layer.weights;
+        SimpleMatrix propagationWeights = layers.get(layers.size() - 1).layer.weights.copy();
 
         for(int i = layers.size() - 2; i >= 0; i--) {
             layers.get(i).errors = layers.get(i).calculateError(propagationError, propagationWeights, getDerivative(activationFunction, false));
-            propagationError = layers.get(i).errors;
-            propagationWeights = layers.get(i).layer.weights;
+            propagationError = layers.get(i).errors.copy();
+            propagationWeights = layers.get(i).layer.weights.copy();
         }
 
         SimpleMatrix previousActivation = input;
 
         for(int i = 0; i < layers.size(); i++) {
             layers.get(i).layer.weights = layers.get(i).layer.weights.minus(layers.get(i).errors.mult(previousActivation.transpose()).scale(Consts.ALPHA_BY_BATCH));
-            previousActivation = layers.get(i).stimuli;
+            previousActivation = layers.get(i).stimuli.copy();
 
             SimpleMatrix errorSums = new SimpleMatrix(layers.get(i).layer.biases.numRows(), 1);
             for(int j = 0; j < layers.get(i).errors.numRows(); j++) {
@@ -84,7 +84,7 @@ public class MLP {
 
     public ActivationFunction getDerivative(ActivationFunction activationFunction, boolean isSoftmax) {
         if(isSoftmax) {
-            return ActivationFunction.SIGMOID;
+            return ActivationFunction.SIGMOIDD;
         } else {
             if(activationFunction == ActivationFunction.SIGMOID) {
                 return ActivationFunction.SIGMOIDD;

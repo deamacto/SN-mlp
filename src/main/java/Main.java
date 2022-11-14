@@ -22,22 +22,21 @@ public class Main {
 
         ArrayList<Integer> neuronCount = new ArrayList<>();
         neuronCount.add(40);
-        neuronCount.add(60);
         MLP mlp = new MLP(neuronCount);
 
         while (true) {
             Collections.shuffle(Arrays.asList(trainDigits));
-            ArrayList<SimpleMatrix> batches = createMnistMatrix(testDigits);
+            ArrayList<SimpleMatrix> batches = createMnistMatrix(trainDigits);
             ArrayList<SimpleMatrix> labels = createLabelMatrix(trainDigits);
 
             for(int i = 0; i < batches.size(); i++) {
-                mlp.learn(batches.get(i), labels.get(i), ActivationFunction.TANH, false);
+                mlp.learn(batches.get(i), labels.get(i), ActivationFunction.SIGMOID, false);
             }
 
             double correct = 0.0;
 
             for(Digit digit : testDigits) {
-                if(mlp.calculate(digit, ActivationFunction.TANH, true)) {
+                if(mlp.calculate(digit, ActivationFunction.SIGMOID, false)) {
                     correct += 1.0;
                 }
             }
