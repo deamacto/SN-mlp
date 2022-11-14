@@ -2,29 +2,49 @@ import org.ejml.simple.SimpleMatrix;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Main {
     public static void main(String[] args) {
 
         try {
-            Digit[] digits = MnistReader.readData("data/train-images-idx3-ubyte", "data/train-labels-idx1-ubyte");
-//            System.out.println(digits[11]);
-            ArrayList<Integer> neuronCount = new ArrayList<>();
-            neuronCount.add(200);
-            MLP mpl = new MLP(neuronCount);
-
-            for(LayerWrapper layer : mpl.layers) {
-                System.out.println(layer.layer.dimensions());
-            }
-
-
-            ArrayList<SimpleMatrix> batches = createMnistMatrix(digits);
-            ArrayList<SimpleMatrix> labels = createLabelMatrix(digits);
-            mpl.learn(batches.get(0), labels.get(0), ActivationFunction.TANH, true);
-
+            learn();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public static void learn() throws IOException {
+        Digit[] trainDigits = MnistReader.readData("data/train-images-idx3-ubyte", "data/train-labels-idx1-ubyte");
+        Digit[] testDigits = MnistReader.readData("data/t10k-images-idx3-ubyte", "data/t10k-labels-idx1-ubyte");
+
+        ArrayList<Integer> neuronCount = new ArrayList<>();
+        neuronCount.add(40);
+        neuronCount.add(60);
+        MLP mlp = new MLP(neuronCount);
+
+        while (true) {
+            Collections.shuffle(Arrays.asList(trainDigits));
+            ArrayList<SimpleMatrix> batches = createMnistMatrix(testDigits);
+            ArrayList<SimpleMatrix> labels = createLabelMatrix(trainDigits);
+
+            for(int i = 0; i < batches.size(); i++) {
+                mlp.learn(batches.get(i), labels.get(i), ActivationFunction.TANH, false);
+            }
+
+            double correct = 0.0;
+
+            for(Digit digit : testDigits) {
+                if(mlp.calculate(digit, ActivationFunction.TANH, true)) {
+                    correct += 1.0;
+                }
+            }
+
+            System.out.println(correct/testDigits.length);
+        }
+
 
     }
 
@@ -38,7 +58,7 @@ public class Main {
                 batches.add(batch.copy());
                 batch.zero();
             }
-            batch.setColumn(i % 60,0, digits[i].getDigit());
+            batch.setColumn(i % Consts.BATCH_SIZE,0, digits[i].getDigit());
         }
         batches.add(batch.copy());
 
@@ -55,7 +75,7 @@ public class Main {
                 labels.add(batch.copy());
                 batch.zero();
             }
-            batch.setColumn(i % 60,0, digits[i].getLabelArray());
+            batch.setColumn(i % Consts.BATCH_SIZE,0, digits[i].getLabelArray());
         }
 
         labels.add(batch.copy());

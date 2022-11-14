@@ -6,7 +6,7 @@ public class MLP {
     ArrayList<LayerWrapper> layers = new ArrayList<>();
 
     public MLP(ArrayList<Integer> neuronCount) {
-        layers.add(new LayerWrapper(new Layer(10, Consts.NEURONS_INPUT)));
+        layers.add(new LayerWrapper(new Layer(30, Consts.NEURONS_INPUT)));
 
         for(int i = 0; i < neuronCount.size(); i++) {
             layers.add(new LayerWrapper(new Layer(neuronCount.get(i), layers.get(i).layer.biases.numRows())));
@@ -36,7 +36,6 @@ public class MLP {
             }
         }
 
-        System.out.println(result);
         return maxIndex == input.getLabel();
     }
 
