@@ -21,10 +21,12 @@ public class Main {
         Digit[] testDigits = MnistReader.readData("data/t10k-images-idx3-ubyte", "data/t10k-labels-idx1-ubyte");
 
         ArrayList<Integer> neuronCount = new ArrayList<>();
-        neuronCount.add(40);
+        neuronCount.add(500);
         MLP mlp = new MLP(neuronCount);
 
+        int generation = 0;
         while (true) {
+            generation++;
             Collections.shuffle(Arrays.asList(trainDigits));
             ArrayList<SimpleMatrix> batches = createMnistMatrix(trainDigits);
             ArrayList<SimpleMatrix> labels = createLabelMatrix(trainDigits);
@@ -41,7 +43,7 @@ public class Main {
                 }
             }
 
-            System.out.println(correct/testDigits.length + "\t" + mlp.likelyhood);
+            System.out.println(generation + "\t" + correct/testDigits.length + "\t" + mlp.likelyhood);
             mlp.likelyhood = 0;
         }
 

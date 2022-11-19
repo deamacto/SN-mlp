@@ -7,7 +7,7 @@ public class MLP {
     double likelyhood = 0.0;
 
     public MLP(ArrayList<Integer> neuronCount) {
-        layers.add(new LayerWrapper(new Layer(20, Consts.NEURONS_INPUT)));
+        layers.add(new LayerWrapper(new Layer(60, Consts.NEURONS_INPUT)));
 
         for(int i = 0; i < neuronCount.size(); i++) {
             layers.add(new LayerWrapper(new Layer(neuronCount.get(i), layers.get(i).layer.biases.numRows())));
